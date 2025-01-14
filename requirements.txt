@@ -1,0 +1,11 @@
+fastapi==0.95.2
+uvicorn==0.22.0
+pydantic==1.10.7
+openai==0.27.0
+pymongo==4.3.3
+langchain==0.0.136
+beautifulsoup4==4.12.2
+requests==2.31.0
+python-dotenv==1.0.0
+whisper==1.0  # si usas openai-whisper
+pyttsx3==2.90 # si usas TTS local

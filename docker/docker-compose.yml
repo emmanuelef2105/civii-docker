@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: civii_mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    networks:
+      - civii_network
+
+  backend:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.backend
+    container_name: civii_backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      MONGO_HOST: "mongodb"
+      MONGO_PORT: "27017"
+      MONGO_USER: "root"
+      MONGO_PASS: "example"
+      OPENAI_API_KEY: "TU_API_KEY"
+    depends_on:
+      - mongodb
+    networks:
+      - civii_network
+
+  frontend:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.frontend
+    container_name: civii_frontend
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    environment:
+      VITE_BACKEND_URL: "http://backend:8000"
+    depends_on:
+      - backend
+    networks:
+      - civii_network
+
+
+volumes:
+  mongo_data:
+
+networks:
+  civii_network:
+    driver: bridge
